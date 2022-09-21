@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {Product} from './components/Product'
 import { useProducts } from './hooks/products';
 import { IProduct } from './models';
@@ -8,7 +8,13 @@ import { Modal } from './components/Modal';
 import { CreateProduct } from './components/CreateProduct';
 
 function App() {
-  const { products, loading, error } = useProducts();
+  const { products, loading, error, addProduct } = useProducts();
+  const [modal, setModal] = useState(true);
+
+  const createHandler = (product:IProduct) => {
+    setModal(false);
+    addProduct(product);
+  }
 
   return (
     <div className="container mx-auto max-w-2xl pt-5">
@@ -16,9 +22,9 @@ function App() {
       {error && <ErrorMessage error={error} />}
       {products.map((product: IProduct) => <Product product={product} key={product.id} />)}
 
-      <Modal title="Create new product">
-        <CreateProduct />
-      </Modal>
+      {modal && <Modal title="Create new product" >
+        <CreateProduct onCreate={createHandler} />
+      </Modal>}
     </div>
   );
 }
